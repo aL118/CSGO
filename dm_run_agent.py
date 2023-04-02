@@ -36,7 +36,7 @@ from key_output import i_char, v_char, o_char, g_char, k_char, seven_char, x_cha
 
 from tensorflow import keras
 import tensorflow as tf
-import tensorflow.keras.backend as K
+import tensorflow.python.keras.backend as K
 
 from screen_input import grab_window
 from config import *
@@ -69,8 +69,8 @@ model_names = ['ak47_sub_55k_drop_d4_dmexpert_28'] # our best performing dm agen
 # model_names = ['ak47_sub_55k_drop_d4'] # pretrained agent
 # model_names = ['ak47_sub_55k_drop_d4_aimexpertv2_60'] # pretrained and finetuned on expert aim mode
 # model_names = ['July_remoterun7_g9_4k_n32_recipe_ton96__e14'] # pretrained on full dataset
-model_save_dir = os.path.join(os.getcwd(),'model')
-model_save_dir_overflow = 'F:/2021/01_remotemodels_overflow' # could also be in here
+model_save_dir = os.getcwd()+'\\models' #.path.join(os.getcwd(),'model')
+model_save_dir_overflow = model_save_dir #'F:/2021/01_remotemodels_overflow' # could also be in here
 
 # folder to save pickle about rewards etc
 pickle_reward_folder = ''
@@ -95,7 +95,7 @@ IS_PROBABILISTIC_ACTIONS = True # TODO, only set for left click atm
 ENT_REG = 0.05 # entropy regularisation
 N_FILES_RESTART = 500 # how many files to save (of 1000 frames) before map restart
 SAVE_TRAIN_DATA=False # whether to actually save the files and do training
-IS_DEMO=False # show agent vision with overlay
+IS_DEMO=True # show agent vision with overlay
 IS_GSI=False # whether to extract kill, death and aux info using GSI (must be set up on your machine)
 
 
@@ -210,7 +210,8 @@ for training_iter in range(n_iters_total):
     Rclicks=0
     count_inaction=0 # count how many frames takes no action
     training_data=[]; hdf5_num=1
-    iteration_deaths=0; iteration_kills=0;
+    iteration_deaths=0; iteration_kills=0
+    turn=0; lower=0
     while n_loops<1000*(mins_per_iter + 0.02): # x minutes
         if IS_GSI:
             if 'map' not in server.data_all.keys() or 'player' not in server.data_all.keys():
@@ -277,7 +278,7 @@ for training_iter in range(n_iters_total):
                 count_inaction=0
 
         # overwrite best guess action with probabilistica;y selected action
-        if IS_PROBABILISTIC_ACTIONS or count_inaction>8:
+        if IS_PROBABILISTIC_ACTIONS or count_inaction>8:            
             Lclick_prob = clicks_pred[0]
             if np.random.rand()<Lclick_prob and IS_CLICKS:
                 Lclicks=1
@@ -339,14 +340,15 @@ for training_iter in range(n_iters_total):
 
 
         # could apply some smoothing here
-        # mouse_x_smooth = 0.9*mouse_x +  0.1*recent_mouses[-1][0]*mouse_x_lim[1] # + np.random.normal(0,scale = abs(mouse_x/5))
-        # mouse_y_smooth = 0.9*mouse_y +  0.1*recent_mouses[-1][1]*mouse_y_lim[1] # + np.random.normal(0,scale = abs(mouse_y/5))
+        mouse_x_smooth = 0.9*mouse_x +  0.1*recent_mouses[-1][0]*mouse_x_lim[1] # + np.random.normal(0,scale = abs(mouse_x/5))
+        mouse_y_smooth = 0.9*mouse_y +  0.1*recent_mouses[-1][1]*mouse_y_lim[1] # + np.random.normal(0,scale = abs(mouse_y/5))
         mouse_x_smooth = mouse_x
         mouse_y_smooth = mouse_y
 
         mouse_x_smooth = np.clip(mouse_x_smooth,-300,300)
 
 
+        # COMMENT
         if IS_MOUSEMOVE:
             if IS_SPLIT_MOUSE:
                 set_pos(mouse_x_mid + mouse_x_smooth/2, mouse_y_mid + mouse_y_smooth/2,Wd, Hd)
@@ -440,6 +442,7 @@ for training_iter in range(n_iters_total):
             if Rclicks==0 and Rclicks_prev==1:
                 release_right_click()
 
+        # COMMENT
         # press keys 
         if IS_WASD:
             if 'w' in keys_pressed:
@@ -487,6 +490,7 @@ for training_iter in range(n_iters_total):
                 server.server_close()
             break
 
+        # COMMENT
         # mouse movement
         if IS_SPLIT_MOUSE and IS_MOUSEMOVE:
             # wait here for about half the time to smooth mouse
@@ -495,6 +499,16 @@ for training_iter in range(n_iters_total):
                 pass
             set_pos(mouse_x_mid + mouse_x_smooth/2, mouse_y_mid + mouse_y_smooth/2,Wd, Hd)
 
+        #If facing wall, turn right
+        if turn>0:
+            (curr_x,curr_y) = mouse_check()
+            set_pos(curr_x+150,curr_y,Wd, Hd)
+            turn-=1
+        #If facing sky, look down
+        if lower>0:
+            (curr_x,curr_y) = mouse_check()
+            set_pos(curr_x,curr_y+20,Wd, Hd)
+            lower-=1
 
         if IS_DEMO:
             contrast = 1
@@ -556,11 +570,30 @@ for training_iter in range(n_iters_total):
                     cv2.line(resized, (x1, y1), (x2, y2), fontColor_4, thickness=2)
                 cv2.line(resized, (300, 180), (300, 150), fontColor_4, thickness=4)
 
+            # Minimap
+            center = (16,23)
+            cv2.circle(resized, center, radius=0, color=(255, 0, 255), thickness=5)
+            focus = (16,15)
+            col = resized[16, 15]
+            # cv2.putText(resized,np.array2string(col), focus, font, 0.5,fontColor_1,lineType)
 
             # arrow showing mouse movement
             # (x1, y1) = (int(target_width/2), int(220/1000*target_width))
             (x1, y1) = (int(target_width/2), int(target_width/csgo_img_dimension[1]*csgo_img_dimension[0]/2))
             (x2, y2) = (x1+int(mouse_x_smooth/2), int(y1+mouse_y_smooth/2))
+
+            # If map ahead is black, turn
+            if np.array_equal(resized[16, 15], [65,65,65]):
+                cv2.circle(resized, focus, radius=0, color=(0, 255, 255), thickness=8)
+                turn = 15
+            else:
+                cv2.circle(resized, focus, radius=0, color=(255, 255, 0), thickness=8)
+            
+            # If blue > 200, lower screen 
+            pt = resized[420,400] 
+            if pt[0]>200:
+                lower = 5
+
             if Lclicks>0: # change colour if fire
                 cv2.arrowedLine(resized, (x1, y1), (x2, y2), (50, 0, 255), thickness=3)
             else:
@@ -604,6 +637,7 @@ for training_iter in range(n_iters_total):
                 cv2.rectangle(resized, (x1, y1), (x2, y2), (0,0,255) , 2)
             
             # add text
+            cv2.putText(resized,np.array2string(pt), (400,400), font, 0.5,fontColor_1,lineType)
             cv2.putText(resized,text_show_1, text_loc_1, font, fontScale,fontColor_1,lineType)
             cv2.putText(resized,text_show_2, text_loc_2, font, fontScale,fontColor_2,lineType)
             # cv2.putText(resized,text_show_2a, text_loc_2a, font, fontScale,fontColor_2,lineType)
