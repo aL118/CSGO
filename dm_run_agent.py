@@ -213,6 +213,18 @@ for training_iter in range(n_iters_total):
     iteration_deaths=0; iteration_kills=0
     turn=0; lower=0
     while n_loops<1000*(mins_per_iter + 0.02): # x minutes
+        #If facing wall, turn right
+        if turn>0:
+            (curr_x,curr_y) = mouse_check()
+            set_pos(curr_x+150,curr_y,Wd, Hd)
+            turn-=1
+            continue
+        #If facing sky, look down
+        if lower>0:
+            (curr_x,curr_y) = mouse_check()
+            set_pos(curr_x,curr_y+20,Wd, Hd)
+            lower-=1
+            continue
         if IS_GSI:
             if 'map' not in server.data_all.keys() or 'player' not in server.data_all.keys():
                 print('not running, map or player not in keys:', server.data_all.keys())
@@ -245,7 +257,8 @@ for training_iter in range(n_iters_total):
         x_input_main = np.zeros(input_shape_lstm_pred)
         x_input_main[0] = recent_imgs[-1]
         x_input_main = np.expand_dims(x_input_main,0)
-    
+
+
         # run fwd pass through NN
         time_before_pass = time.time()
         y_preds = model_run.predict_on_batch(x_input_main)
@@ -346,7 +359,6 @@ for training_iter in range(n_iters_total):
         mouse_y_smooth = mouse_y
 
         mouse_x_smooth = np.clip(mouse_x_smooth,-300,300)
-
 
         # COMMENT
         if IS_MOUSEMOVE:
@@ -498,17 +510,6 @@ for training_iter in range(n_iters_total):
                 time.sleep(0.001)
                 pass
             set_pos(mouse_x_mid + mouse_x_smooth/2, mouse_y_mid + mouse_y_smooth/2,Wd, Hd)
-
-        #If facing wall, turn right
-        if turn>0:
-            (curr_x,curr_y) = mouse_check()
-            set_pos(curr_x+150,curr_y,Wd, Hd)
-            turn-=1
-        #If facing sky, look down
-        if lower>0:
-            (curr_x,curr_y) = mouse_check()
-            set_pos(curr_x,curr_y+20,Wd, Hd)
-            lower-=1
 
         if IS_DEMO:
             contrast = 1
