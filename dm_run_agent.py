@@ -225,6 +225,7 @@ for training_iter in range(n_iters_total):
             set_pos(curr_x,curr_y+20,Wd, Hd)
             lower-=1
             continue
+
         if IS_GSI:
             if 'map' not in server.data_all.keys() or 'player' not in server.data_all.keys():
                 print('not running, map or player not in keys:', server.data_all.keys())
@@ -594,6 +595,9 @@ for training_iter in range(n_iters_total):
             pt = resized[420,400] 
             if pt[0]>200:
                 lower = 5
+                cv2.putText(resized,np.array2string(pt), (400,400), font, 0.5,fontColor_2,lineType)
+            else:
+                cv2.putText(resized,np.array2string(pt), (400,400), font, 0.5,fontColor_1,lineType)
 
             if Lclicks>0: # change colour if fire
                 cv2.arrowedLine(resized, (x1, y1), (x2, y2), (50, 0, 255), thickness=3)
@@ -638,7 +642,6 @@ for training_iter in range(n_iters_total):
                 cv2.rectangle(resized, (x1, y1), (x2, y2), (0,0,255) , 2)
             
             # add text
-            cv2.putText(resized,np.array2string(pt), (400,400), font, 0.5,fontColor_1,lineType)
             cv2.putText(resized,text_show_1, text_loc_1, font, fontScale,fontColor_1,lineType)
             cv2.putText(resized,text_show_2, text_loc_2, font, fontScale,fontColor_2,lineType)
             # cv2.putText(resized,text_show_2a, text_loc_2a, font, fontScale,fontColor_2,lineType)
