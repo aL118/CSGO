@@ -28,22 +28,22 @@ from config import *
 # (probably want to delete some due to the per file checks)
 
 
-file_name_stub = 'dm_sample_' 
-folder_name = 'G:/2021/csgo_bot_train_july2021/'
+file_name_stub = 'dm_test_better' 
+folder_name = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\playtest\\'
 
 starting_value = 1
-highest_num = get_highest_num(file_name_stub, folder_name)
+highest_num = starting_value
 # highest_num = 4020
 summary_stats=[]
 
 # for each file of interest
 for file_num in range(starting_value,highest_num+1):
-    file_name = folder_name+file_name_stub + str(file_num) + '.npy'
+    file_name = folder_name+file_name_stub + '.npy'
 
     # try to find file
     is_found=False
     for file in os.listdir(folder_name):
-        if file_name_stub + str(file_num) + '.npy' == file:
+        if file_name_stub + '.npy' == file:
             is_found=True
             break
     if not is_found:

@@ -51,14 +51,14 @@ from dm_hazedumper_offsets import *
 
 save_name = 'dm_test_expert_' # stub name of file to save as
 
-folder_name = 'F:/2021/csgo_bot_train_july2021/'
+folder_name = 'C:/Users/angel/OneDrive/Documents/UMD/CSGO/Counter-Strike_Behavioural_Cloning/playtest/' #'F:/2021/csgo_bot_train_july2021/'
 # starting_value = get_highest_num(save_name, folder_name)+1 # set to one larger than whatever found so far
 starting_value = 1
 
 is_show_img = False
 
 # now find the requried process and where two modules (dll files) are in RAM
-hwin_csgo = win32gui.FindWindow(0, ('counter-Strike: Global Offensive'))
+hwin_csgo = win32gui.FindWindow(None,'Counter-Strike: Global Offensive - Direct3d 9') # hwin_csgo = win32gui.FindWindow(0, ('counter-Strike: Global Offensive'))
 if(hwin_csgo):
     pid=win32process.GetWindowThreadProcessId(hwin_csgo)
     handle = pymem.Pymem()
@@ -104,6 +104,7 @@ while True:
     n_loops += 1
 
     keys_pressed = key_check()
+    print(keys_pressed)
     if 'Q' in keys_pressed:
         # exit loop
         print('exiting...')
@@ -112,7 +113,7 @@ while True:
 
     curr_vars={}
 
-    # grab address of ME = player, and see what observation mode I'm in
+    # grab address of ME = player, and see what observation mode I'm int
     player = read_memory(game,(off_clientdll + dwLocalPlayer), "i")
     curr_vars['obs_mode'] = read_memory(game,(player + m_iObserverMode),'i')
 
@@ -290,7 +291,7 @@ while True:
         if len(training_data) % 100 == 0:
             print('training data collected:', len(training_data))
 
-        if len(training_data) >= 1000:
+        if len(training_data) >= 100:
             # save about every minute
             file_name = folder_name+save_name+'{}.npy'.format(starting_value)
             np.save(file_name,training_data)

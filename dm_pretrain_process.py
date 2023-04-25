@@ -27,20 +27,20 @@ from config import *
 # this effectively duplicates our datasize, so could delete the image in the .npy file 
 
 
-file_name_stub = 'dm_mirage_expert_' 
+file_name_stub = 'dm_test_better' 
 # folder_name = 'F:/2021/csgo_bot_train_july2021/'
-folder_name = 'G:/2021/csgo_bot_train_july2021/06_othermaps/'
+folder_name = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\playtest\\'
 
 # folder_name = 'F:/01_training_data_hdd/04_march_2021_aim_clean/'
 starting_value = 1
-highest_num = get_highest_num(file_name_stub, folder_name)
+highest_num = starting_value
 # highest_num = 2100
 
 
 # for each file of interest
 for file_num in range(starting_value,highest_num+1):
     print(datetime.datetime.now())
-    file_name = folder_name+file_name_stub + str(file_num) + '.npy'
+    file_name = folder_name+file_name_stub + '.npy'
     print('load train data from ', file_name, ' ...')
 
     training_data = np.load(file_name, allow_pickle=True)

@@ -122,5 +122,5 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         """
         return
 
-server = MyServer(('localhost', 3000), 'MYTOKENHERE', MyRequestHandler)
+server = MyServer(('localhost', 3000), "Q79v5tcxVQ8u", MyRequestHandler)
 

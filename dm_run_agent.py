@@ -69,7 +69,7 @@ model_names = ['ak47_sub_55k_drop_d4_dmexpert_28'] # our best performing dm agen
 # model_names = ['ak47_sub_55k_drop_d4'] # pretrained agent
 # model_names = ['ak47_sub_55k_drop_d4_aimexpertv2_60'] # pretrained and finetuned on expert aim mode
 # model_names = ['July_remoterun7_g9_4k_n32_recipe_ton96__e14'] # pretrained on full dataset
-model_save_dir = os.getcwd()+'\\models' #.path.join(os.getcwd(),'model')
+model_save_dir = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\models' #.path.join(os.getcwd(),'model')
 model_save_dir_overflow = model_save_dir #'F:/2021/01_remotemodels_overflow' # could also be in here
 
 # folder to save pickle about rewards etc
@@ -212,19 +212,19 @@ for training_iter in range(n_iters_total):
     training_data=[]; hdf5_num=1
     iteration_deaths=0; iteration_kills=0
     turn=0; lower=0
+    ended = False
     while n_loops<1000*(mins_per_iter + 0.02): # x minutes
+        (curr_x,curr_y) = mouse_check()
         #If facing wall, turn right
         if turn>0:
-            (curr_x,curr_y) = mouse_check()
-            set_pos(curr_x+150,curr_y,Wd, Hd)
+            set_pos(curr_x+50,curr_y,Wd, Hd)
             turn-=1
             continue
-        #If facing sky, look down
-        if lower>0:
-            (curr_x,curr_y) = mouse_check()
-            set_pos(curr_x,curr_y+20,Wd, Hd)
-            lower-=1
-            continue
+        #If facing sky, look down (not necessary?)
+        # if lower>0:
+        #     set_pos(curr_x,curr_y+20,Wd, Hd)
+        #     lower-=1
+        #     continue
 
         if IS_GSI:
             if 'map' not in server.data_all.keys() or 'player' not in server.data_all.keys():
@@ -363,10 +363,12 @@ for training_iter in range(n_iters_total):
 
         # COMMENT
         if IS_MOUSEMOVE:
+            clip_x = min(mouse_x_smooth,-1 if mouse_x_smooth<0 else 1)
+            clip_y = min(mouse_y_smooth,-1 if mouse_y_smooth<0 else 1)
             if IS_SPLIT_MOUSE:
-                set_pos(mouse_x_mid + mouse_x_smooth/2, mouse_y_mid + mouse_y_smooth/2,Wd, Hd)
-            else:
-                set_pos(mouse_x_mid + mouse_x_smooth/1, mouse_y_mid + mouse_y_smooth/1,Wd, Hd)
+                clip_x = min(mouse_x_smooth/2,-1 if mouse_x_smooth<0 else 1)
+                clip_y = min(mouse_y_smooth/2,-1 if mouse_y_smooth<0 else 1)
+            set_pos(curr_x + clip_x, curr_y + clip_y,Wd, Hd)
 
         if n_loops>2:
             if len(model_name)>15:
@@ -502,6 +504,15 @@ for training_iter in range(n_iters_total):
             if IS_GSI:
                 server.server_close()
             break
+        elif 'C' in keys_pressed_tp:
+            if not ended:
+                print('taking over ...')
+                import manual
+                manual.main()
+                ended = True
+                print('giving back control ...')
+        else:
+            ended = False
 
         # COMMENT
         # mouse movement
@@ -510,7 +521,9 @@ for training_iter in range(n_iters_total):
             while time.time() < loop_start_time + 0.5/loop_fps:
                 time.sleep(0.001)
                 pass
-            set_pos(mouse_x_mid + mouse_x_smooth/2, mouse_y_mid + mouse_y_smooth/2,Wd, Hd)
+            clip_x = min(mouse_x_smooth/2,-1 if mouse_x_smooth<0 else 1)
+            clip_y = min(mouse_y_smooth/2,-1 if mouse_y_smooth<0 else 1)
+            set_pos(curr_x + clip_x, curr_y + clip_y,Wd, Hd)
 
         if IS_DEMO:
             contrast = 1
