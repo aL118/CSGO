@@ -31,15 +31,15 @@ batch_size = 1 # this is total batchsize using all GPUs, so make divisible by nu
 l_rate = 0.0001
 
 # training data location
-file_name_stub = 'dm_july2021_expert_' # dm_july2021_ aim_july2021_expert_ dm_july2021_expert_
+file_name_stub = 'dm_test_better' # dm_july2021_ aim_july2021_expert_ dm_july2021_expert_
 # file_name_stub = 'dm_6nov_aim_' 
-folder_name = '/mfs/TimPearce/01_csgo/01_trainingdata/' 
+folder_name = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\playtest\\' 
 starting_num = 1 # lowest file name to use in training
 highest_num = 30 # highest file name to use in training 4000, 5500, 190, 45, 10
 
 # whether to save model if training and where
-model_name = 'ak47_m41a_55k_sub_drop_'
-save_dir = '/mfs/TimPearce/01_csgo/02_savedmodels'
+model_name = 'first'
+save_dir = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\my_models\\'
 SAVE_MODEL = True
 
 # whether to resume training from a previous model
@@ -811,6 +811,8 @@ if file_name_stub == 'dm_inferno_expert_' or file_name_stub == 'dm_mirage_expert
     hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=True, max_queue_size=20) 
     tp_save_model(model, save_dir, model_name+'24')
 
+# save my models
+tp_save_model(model, save_dir, model_name)
 
 print('took',np.round(time.time()-start_time,1),' secs\n')
 
