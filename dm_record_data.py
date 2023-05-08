@@ -44,7 +44,7 @@ if True:
 from dm_hazedumper_offsets import *
 
 save_name = 'dm_test_' # stub name of file to save as
-folder_name = 'F:/2021/csgo_bot_train_july2021/'
+folder_name = 'C:/Users/angel/CSGO/Counter-Strike_Behavioural_Cloning/stats/'
 # starting_value = get_highest_num(save_name, folder_name)+1 # set to one larger than whatever found so far
 starting_value = 1
 
@@ -124,7 +124,7 @@ while True:
         print('not recording, not live')
         # seem to need to restart the gsi connection between each game
         server.server_close()
-        server = MyServer(('localhost', 3000), 'MYTOKENHERE', MyRequestHandler)
+        server = MyServer(('localhost', 3000), 'Q79v5tcxVQ8u', MyRequestHandler)
         server.handle_request()
 
         while server.data_all['map']['phase']!='live' and server.data_all['map']['phase']!='warmup':

@@ -27,7 +27,7 @@ from config import *
 # this effectively duplicates our datasize, so could delete the image in the .npy file 
 
 
-file_name_stub = 'dm_test_better' 
+file_name_stub = 'bottom_left_corner_v2' 
 # folder_name = 'F:/2021/csgo_bot_train_july2021/'
 folder_name = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\playtest\\'
 

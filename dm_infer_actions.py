@@ -28,7 +28,7 @@ from config import *
 # (probably want to delete some due to the per file checks)
 
 
-file_name_stub = 'dm_test_better' 
+file_name_stub = 'spectate' 
 folder_name = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\playtest\\'
 
 starting_value = 1

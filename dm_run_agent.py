@@ -62,7 +62,7 @@ print('capturing mouse position...')
 time.sleep(0.2)
 mouse_x_mid, mouse_y_mid = mouse_check()
 
-mins_per_iter = 10
+mins_per_iter = 9
 
 # load model from
 model_names = ['ak47_sub_55k_drop_d4_dmexpert_28'] # our best performing dm agent, pretrained and finetuned on expert dm data
@@ -74,9 +74,9 @@ model_save_dir_overflow = model_save_dir #'F:/2021/01_remotemodels_overflow' # c
 
 # folder to save pickle about rewards etc
 pickle_reward_folder = ''
-pickle_reward_name = 'rewards_.p'
+pickle_reward_name = 'rewards_mediumbots.pkl'
 
-pickle_reward_path = os.path.join(pickle_reward_folder, pickle_reward_name)
+pickle_reward_path = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\stats\\'+pickle_reward_name
 pickle.dump([], open(pickle_reward_path, 'wb'))
 print('saved pickled rewards',pickle_reward_path)
 
@@ -213,7 +213,7 @@ for training_iter in range(n_iters_total):
     iteration_deaths=0; iteration_kills=0
     turn=0; lower=0
     ended = False
-    while n_loops<1000*(mins_per_iter + 0.02): # x minutes
+    while n_loops<1000*(mins_per_iter): # x minutes
         (curr_x,curr_y) = mouse_check()
         #If facing wall, turn right
         if turn>0:
@@ -221,10 +221,10 @@ for training_iter in range(n_iters_total):
             turn-=1
             continue
         #If facing sky, look down (not necessary?)
-        # if lower>0:
-        #     set_pos(curr_x,curr_y+20,Wd, Hd)
-        #     lower-=1
-        #     continue
+        if lower>0:
+            set_pos(curr_x,curr_y+20,Wd, Hd)
+            lower-=1
+            continue
 
         if IS_GSI:
             if 'map' not in server.data_all.keys() or 'player' not in server.data_all.keys():
@@ -503,6 +503,7 @@ for training_iter in range(n_iters_total):
             print('exiting...')
             if IS_GSI:
                 server.server_close()
+                print(server.data_all['player'])
             break
         elif 'C' in keys_pressed_tp:
             if not ended:
@@ -702,7 +703,9 @@ for training_iter in range(n_iters_total):
 
 
     reward_list = pickle.load(open(pickle_reward_path, 'rb'))
-    reward_list.append([model_name,training_iter,n_loops,iteration_kills*1000/n_loops,iteration_deaths*1000/n_loops, iteration_kills,iteration_deaths,iteration_kills/np.maximum(iteration_deaths,1)])
+    reward_list.append([model_name,training_iter,n_loops,iteration_kills*1000/n_loops,iteration_deaths*1000/n_loops, 
+                        iteration_kills,iteration_deaths,iteration_kills/np.maximum(iteration_deaths,1),
+                        "kdr:"+str(iteration_kills/iteration_deaths),"kpm:"+str(iteration_kills/10)])
     pickle.dump(reward_list, open(pickle_reward_path, 'wb'))
     print('saved pickled rewards',pickle_reward_path)
 

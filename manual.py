@@ -154,11 +154,11 @@ def main(save_name):
                     curr_vars['gsi_ammo'] = curr_vars['gsi_weap_active']['ammo_clip']
 
         # --- get RAM info
-        if curr_vars['obs_mode']==4: # figure out which player I'm observing
-            obs_handle = read_memory(game,(player + m_hObserverTarget),'i')
-            obs_id = (obs_handle & 0xFFF)
-            obs_address = read_memory(game,off_clientdll + dwEntityList + ((obs_handle & 0xFFF)-1)*0x10, "i")
-        else: # else if not observing, just use me as player
+        # if curr_vars['obs_mode']==4: # figure out which player I'm observing
+        #     obs_handle = read_memory(game,(player + m_hObserverTarget),'i')
+        #     obs_id = (obs_handle & 0xFFF)
+        #     obs_address = read_memory(game,off_clientdll + dwEntityList + ((obs_handle & 0xFFF)-1)*0x10, "i")
+        # else: # else if not observing, just use me as player
             obs_address = player
             obs_id=None
             
@@ -301,4 +301,4 @@ def main(save_name):
             # will be running fwd pass through NN
         wait_for_loop_end(loop_start_time, loop_fps, n_loops, is_clear_decals=True)
 
-main("dm_test_better")
+main("spectate")

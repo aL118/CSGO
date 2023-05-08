@@ -6,31 +6,31 @@ plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
 plt.rcParams.update({'font.size': 16})
 
-save_path = '/Users/timpearce/Google Drive/Google Drive all/05. misc geeky/03_csgo_bot/01_writeup/images/aaaishots/'
+save_path = 'C:/Users/angel/CSGO/Counter-Strike_Behavioural_Cloning'
 # figsize_in = (5,2.5) # x, y width
 
 is_save=False
 
-file_name_stub = 'dm_july2021_' 
+file_name_stub = 'bottom_left_corner_v2' 
 # folder_name = 'G:/2021/csgo_bot_train_july2021/'
 # folder_name = '/Volumes/My Passport/2021/csgo_bot_train_july2021/'
-folder_name = '/Volumes/My Passport/2021/csgo_bot_train_july2021/dataset_metadata/'
+folder_name = 'C:/Users/angel/CSGO/Counter-Strike_Behavioural_Cloning/dataset_metadata/'
 n_filer_per_chunk=100
 info_array = []
 weap_arr=[]
 weap_type_arr=[]
-for file_chunk in range(0,3):
+for file_chunk in range(0,1):
 # for file_chunk in range(0,55):
-    print('file_chunk',file_chunk,end='\r')
-    dict_chunk = np.load(folder_name+'currvarsv2_'+file_name_stub+str(file_chunk*n_filer_per_chunk+1)+'_to_'+str((file_chunk+1)*n_filer_per_chunk)+'.npy',allow_pickle=True)
+    # print('file_chunk',file_chunk,end='\r')
+    dict_chunk = np.load(folder_name+'my_currvarsv2_'+file_name_stub+str(file_chunk*n_filer_per_chunk+1)+'_to_'+str((file_chunk+1)*n_filer_per_chunk)+'.npy',allow_pickle=True)
     dict_chunk = dict_chunk.item()
-
+    # print('currvarsv2_'+file_name_stub+str(file_chunk*n_filer_per_chunk+1)+'_to_'+str((file_chunk+1)*n_filer_per_chunk)+'.npy')
     # file_num1000_frame_0
     # file_num1000_frame_999
     # use this to make sure go through in order
     prev_mouse = (0,0)
-    for file_i in range(file_chunk*n_filer_per_chunk+1,(file_chunk+1)*n_filer_per_chunk+1):
-        for frame_i in range(0,1000):
+    for file_i in range(file_chunk*n_filer_per_chunk+1,2):
+        for frame_i in range(0,406):
             key = 'file_num' + str(file_i) +'_frame_' + str(frame_i)
 
             dict_key = dict_chunk[key]
@@ -84,6 +84,8 @@ print('total ak deaths',ak_arr[:,6].sum())
 print('mean ak kills',ak_arr[:,5].mean())
 print('mean ak deaths',ak_arr[:,6].mean())
 
+print('kdr',info_array[:,5].sum()/info_array[:,6].sum())
+print('kpm',info_array[:,5].sum()/(info_array.shape[0]/(200*60)))
 weap_count_dict = {}
 for w in weap_arr:
     if w in weap_count_dict.keys():
@@ -184,7 +186,7 @@ if is_save:
 
 
 
-nshow=25
+nshow=3
 weap_count_arr[-nshow] = weap_count_arr[:-nshow].sum()
 weap_count_name[-nshow] = 'other'
 fig, ax = plt.subplots(1,1,figsize=(8,8))

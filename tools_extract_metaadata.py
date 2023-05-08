@@ -11,20 +11,20 @@ import numpy as np
 from pathlib import Path
 
 # file_name_stub = 'agentj22_capture' 
-# file_name_stub = 'agentj22_dmexpert20_capture' 
+file_name_stub = 'spectate' 
 # file_name_stub = 'bot_capture_' 
 # file_name_stub = 'dm_july2021_' 
 # file_name_stub = 'dm_july2021_expert_' 
 # file_name_stub = 'aim_july2021_expert_' 
 # file_name_stub = 'dm_inferno_expert_' 
 # file_name_stub = 'dm_nuke_expert_' 
-file_name_stub = 'dm_mirage_expert_' 
+# file_name_stub = 'agentj22_capture' 
 
 # folder_name = 'G:/2021/csgo_bot_train_july2021/'
 # folder_name = '/Volumes/My Passport/2021/csgo_bot_train_july2021/'
 # folder_name = '/Volumes/My Passport/2021/csgo_bot_train_july2021/03_dm_expert/'
 # folder_name = '/Volumes/My Passport/2021/csgo_bot_train_july2021/04_aim_expert/'
-folder_name = '/Volumes/My Passport/2021/csgo_bot_train_july2021/06_othermaps/'
+folder_name = 'C:/Users/angel/CSGO/Counter-Strike_Behavioural_Cloning/playtest/'
 # folder_name = '/Volumes/My Passport/2021/csgo_bot_train_july2021/05_trackings/'
 # highest_num = get_highest_num(file_name_stub, folder_name)
 
@@ -32,9 +32,8 @@ folder_name = '/Volumes/My Passport/2021/csgo_bot_train_july2021/06_othermaps/'
 for file_chunk in range(0,1):
     save_dict={}
     n_filer_per_chunk=100
-    for file_num in range(file_chunk*n_filer_per_chunk+1,(file_chunk+1)*n_filer_per_chunk+1):
-        print('file_num',file_num,end='\r')
-        file_name = folder_name+file_name_stub + str(file_num) + '.npy'
+    for file_num in range(1,2):
+        file_name = folder_name+file_name_stub + '.npy'
 
         # try to find file
         is_found=False
@@ -53,8 +52,8 @@ for file_chunk in range(0,1):
             helper_arr_i = training_data[i][-1] # kill, death flag
             save_dict['file_num'+str(file_num)+'_frame_'+str(i)] = [curr_vars, infer_a, helper_arr_i]
 
-
-    np.save(folder_name+'currvarsv2_'+file_name_stub+str(file_chunk*n_filer_per_chunk+1)+'_to_'+str((file_chunk+1)*n_filer_per_chunk)+'.npy', save_dict)
+    save_folder_name = 'C:/Users/angel/CSGO/Counter-Strike_Behavioural_Cloning/dataset_metadata/'
+    np.save(save_folder_name+'my_currvarsv2_'+file_name_stub+str(file_chunk*n_filer_per_chunk+1)+'_to_'+str((file_chunk+1)*n_filer_per_chunk)+'.npy', save_dict)
     print('SAVED')
 
 

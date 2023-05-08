@@ -49,9 +49,8 @@ if True:
 
 from dm_hazedumper_offsets import *
 
-save_name = 'dm_test_expert_' # stub name of file to save as
-
-folder_name = 'C:/Users/angel/OneDrive/Documents/UMD/CSGO/Counter-Strike_Behavioural_Cloning/playtest/' #'F:/2021/csgo_bot_train_july2021/'
+save_name = 'angela_expert_' # stub name of file to save as
+folder_name = 'C:/Users/angel/CSGO/Counter-Strike_Behavioural_Cloning/dataset_metadata/' #'F:/2021/csgo_bot_train_july2021/'
 # starting_value = get_highest_num(save_name, folder_name)+1 # set to one larger than whatever found so far
 starting_value = 1
 
