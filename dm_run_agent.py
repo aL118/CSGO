@@ -65,11 +65,11 @@ mouse_x_mid, mouse_y_mid = mouse_check()
 mins_per_iter = 9
 
 # load model from
-model_names = ['ak47_sub_55k_drop_d4_dmexpert_28'] # our best performing dm agent, pretrained and finetuned on expert dm data
+model_names = ['my_modela4'] # our best performing dm agent, pretrained and finetuned on expert dm data
 # model_names = ['ak47_sub_55k_drop_d4'] # pretrained agent
 # model_names = ['ak47_sub_55k_drop_d4_aimexpertv2_60'] # pretrained and finetuned on expert aim mode
 # model_names = ['July_remoterun7_g9_4k_n32_recipe_ton96__e14'] # pretrained on full dataset
-model_save_dir = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\models' #.path.join(os.getcwd(),'model')
+model_save_dir = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\my_models' #.path.join(os.getcwd(),'model')
 model_save_dir_overflow = model_save_dir #'F:/2021/01_remotemodels_overflow' # could also be in here
 
 # folder to save pickle about rewards etc
@@ -198,7 +198,7 @@ for training_iter in range(n_iters_total):
 
     # load stateful version of current model
     try:
-        model_run = tp_load_model(model_save_dir, model_name+'_stateful')
+        model_run = tp_load_model(model_save_dir, model_name)
     except:
         print('\n\nmodel not in main folder, trying overflow\n\n')
         model_run = tp_load_model(model_save_dir_overflow, model_name+'_stateful')

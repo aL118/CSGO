@@ -14,7 +14,7 @@ is_save=True
 is_plot=True
 info_array_dict = {}
 figsize_in = (5,5)
-for file_name_stub in ['bottom_left_corner']:#['agentj22_capture','agentj22_dmexpert20_capture','bot_capture_','dm_july2021_','dm_july2021_expert_']:
+for file_name_stub in ['agentj22_capture','agentj22_dmexpert20_capture','bot_capture_','dm_july2021_','dm_july2021_expert_']:
 # for file_name_stub in ['dm_july2021_expert_']:
     print(file_name_stub)
     # folder_name = 'G:/2021/csgo_bot_train_july2021/'
@@ -27,7 +27,8 @@ for file_name_stub in ['bottom_left_corner']:#['agentj22_capture','agentj22_dmex
     weap_type_arr=[]
     for file_chunk in range(0,max_file):
         # print('file_chunk',file_chunk,end='\r')
-        curr_path = folder_name+'my_currvarsv2_bottom_left_corner_v21_to_100.npy'#folder_name+'my_currvarsv2_'+file_name_stub+str(file_chunk*n_filer_per_chunk+1)+'_to_'+str((file_chunk+1)*n_filer_per_chunk)+'.npy'
+        curr_path = folder_name+'currvarsv2_'+file_name_stub+str(file_chunk*n_filer_per_chunk+1)+'_to_'+str((file_chunk+1)*n_filer_per_chunk)+'.npy'
+        print(curr_path)
         dict_chunk = np.load(curr_path,allow_pickle=True)
         dict_chunk = dict_chunk.item()
         # print(folder_name+'currvarsv2_'+file_name_stub+str(file_chunk*n_filer_per_chunk+1)+'_to_'+str((file_chunk+1)*n_filer_per_chunk)+'.npy')
@@ -38,7 +39,6 @@ for file_name_stub in ['bottom_left_corner']:#['agentj22_capture','agentj22_dmex
             dict_key = dict_chunk[key]
             mousex = dict_key[1][1]
             mousey = dict_key[1][2]
-            print(mousex,mousey)
             pos1 = dict_key[0]['localpos1'] 
             pos2 = dict_key[0]['localpos2'] 
             pos3 = dict_key[0]['localpos3'] 

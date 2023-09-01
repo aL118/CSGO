@@ -1,0 +1,6 @@
+# ignore large models
+dataset_metadata/
+location_trackings_backup/
+models/
+my_models/
+playtest/
