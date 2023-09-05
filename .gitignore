@@ -1,0 +1,11 @@
+# ignore data folders
+/bot_playtest
+/dataset_dm_expert_dust2
+/dataset_metadata
+/hdfs
+/location_trackings_backup
+/models
+/my_dataset_metadata
+/my_models
+/playtest
+/stats

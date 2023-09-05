@@ -69,16 +69,16 @@ model_names = ['ak47_sub_55k_drop_d4_dmexpert_28'] # our best performing dm agen
 # model_names = ['ak47_sub_55k_drop_d4'] # pretrained agent
 # model_names = ['ak47_sub_55k_drop_d4_aimexpertv2_60'] # pretrained and finetuned on expert aim mode
 # model_names = ['July_remoterun7_g9_4k_n32_recipe_ton96__e14'] # pretrained on full dataset
-model_save_dir = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\models' #.path.join(os.getcwd(),'model')
+model_save_dir = 'D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\models\\' #.path.join(os.getcwd(),'model')
 model_save_dir_overflow = model_save_dir #'F:/2021/01_remotemodels_overflow' # could also be in here
 
 # folder to save pickle about rewards etc
 pickle_reward_folder = ''
-pickle_reward_name = 'rewards_mediumbots.pkl'
+pickle_reward_name = 'rewards.pkl'
 
-pickle_reward_path = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\stats\\'+pickle_reward_name
-pickle.dump([], open(pickle_reward_path, 'wb'))
-print('saved pickled rewards',pickle_reward_path)
+# pickle_reward_path = 'C:\\Users\\angel\\CSGO\\Counter-Strike_Behavioural_Cloning\\stats\\'+pickle_reward_name
+# pickle.dump([], open(pickle_reward_path, 'wb'))
+# print('saved pickled rewards',pickle_reward_path)
 
 # which actions do you want to allow the agent to control?
 IS_CLICKS=1 # allows only to play with left click
@@ -96,7 +96,7 @@ ENT_REG = 0.05 # entropy regularisation
 N_FILES_RESTART = 500 # how many files to save (of 1000 frames) before map restart
 SAVE_TRAIN_DATA=False # whether to actually save the files and do training
 IS_DEMO=True # show agent vision with overlay
-IS_GSI=False # whether to extract kill, death and aux info using GSI (must be set up on your machine)
+IS_GSI=True # whether to extract kill, death and aux info using GSI (must be set up on your machine)
 
 
 if IS_GSI:
@@ -506,7 +506,7 @@ for training_iter in range(n_iters_total):
                 print(server.data_all['player'])
             break
         elif 'C' in keys_pressed_tp:
-            if not ended:
+            if False and not ended:
                 print('taking over ...')
                 import manual
                 manual.main()
@@ -702,12 +702,12 @@ for training_iter in range(n_iters_total):
     pause_game()
 
 
-    reward_list = pickle.load(open(pickle_reward_path, 'rb'))
-    reward_list.append([model_name,training_iter,n_loops,iteration_kills*1000/n_loops,iteration_deaths*1000/n_loops, 
-                        iteration_kills,iteration_deaths,iteration_kills/np.maximum(iteration_deaths,1),
-                        "kdr:"+str(iteration_kills/iteration_deaths),"kpm:"+str(iteration_kills/10)])
-    pickle.dump(reward_list, open(pickle_reward_path, 'wb'))
-    print('saved pickled rewards',pickle_reward_path)
+    # reward_list = pickle.load(open(pickle_reward_path, 'rb'))
+    # reward_list.append([model_name,training_iter,n_loops,iteration_kills*1000/n_loops,iteration_deaths*1000/n_loops, 
+    #                     iteration_kills,iteration_deaths,iteration_kills/np.maximum(iteration_deaths,1),
+    #                     "kdr:"+str(iteration_kills/iteration_deaths),"kpm:"+str(iteration_kills/10)])
+    # pickle.dump(reward_list, open(pickle_reward_path, 'wb'))
+    # print('saved pickled rewards',pickle_reward_path)
 
 
 

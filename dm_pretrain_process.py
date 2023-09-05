@@ -129,7 +129,7 @@ for file in ['general_play_3.npy','general_play_4.npy']:
         # h5file.create_dataset('frame_'+str(i)+'_currvars', data=curr_vars) 
         # h5file.create_dataset('frame_'+str(i)+'_infera', data=infer_a)
     save_file_name ='D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\hdfs\\'+h5file_name
-    np.save(save_file_name,new_training_data)
+    np.save(file_name,new_training_data)
     print('SAVED', file_name)
     print('SAVED', h5file_name)
     print()

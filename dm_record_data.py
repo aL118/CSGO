@@ -44,7 +44,7 @@ if True:
 from dm_hazedumper_offsets import *
 
 save_name = 'dm_test_' # stub name of file to save as
-folder_name = 'C:/Users/angel/CSGO/Counter-Strike_Behavioural_Cloning/stats/'
+folder_name = 'D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\stats\\'
 # starting_value = get_highest_num(save_name, folder_name)+1 # set to one larger than whatever found so far
 starting_value = 1
 

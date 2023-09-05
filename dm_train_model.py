@@ -23,6 +23,7 @@ from tensorflow.keras import losses
 from tensorflow import keras
 import tensorflow.keras.backend as K
 from tensorflow.keras.applications import EfficientNetB0
+from random import sample
 
 from config import *
 
@@ -31,16 +32,15 @@ batch_size = 1 # this is total batchsize using all GPUs, so make divisible by nu
 l_rate = 0.0001
 
 # training data location
-file_name_stub = 'play_' # dm_july2021_ aim_july2021_expert_ dm_july2021_expert_
+file_name_stub = 'dm_july2021_expert_' # dm_july2021_ aim_july2021_expert_ dm_july2021_expert_
 # file_name_stub = 'dm_6nov_aim_' 
 orig_folder_name = 'D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\dataset_dm_expert_dust2\\' 
 my_folder_name = 'D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\hdfs\\' 
-orig_folder_name = my_folder_name
 starting_num = 1 # lowest file name to use in training
 highest_num = 30 # highest file name to use in training 4000, 5500, 190, 45, 10
 
 # whether to save model if training and where
-model_name = 'first_attempt'
+model_name = 'my_model'
 save_dir = 'D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\my_models\\'
 SAVE_MODEL = True
 
@@ -284,8 +284,14 @@ class DataGenerator(keras.utils.Sequence):
 
         # Find list of IDs
         list_IDs_temp = [self.list_IDs[k] for k in indexes]
+        my_list_IDs_temp = [self.list_IDs[k] for k in range(0,min(90,len(self.list_IDs)))]
 
-        X, y = self.__data_generation(list_IDs_temp)
+        X1, y1 = self.__data_generation(list_IDs_temp, orig_folder_name, "dm_july2021_expert_")
+        X2, y2 = self.__data_generation(my_list_IDs_temp, my_folder_name, "play_")
+        # sample half from each dataset
+        orig = sample(range(0,96),48)
+        X = np.array([[X1[0][i] if i in orig else X2[0][i] for i in range(0,96)]])
+        y = np.array([[y1[0][i] if i in orig else y2[0][i] for i in range(0,96)]])
         return X, y
 
     def on_epoch_end(self):
@@ -297,7 +303,7 @@ class DataGenerator(keras.utils.Sequence):
         # could do subsampling at this stage, by 
         # using ID in format 'filenum-framenum-containkillevent'
 
-    def __data_generation(self, list_IDs_temp):
+    def __data_generation(self, list_IDs_temp, folder_name, stub_name):
 
         # set up empty arrays to fill
         x_shape = list(input_shape)
@@ -313,16 +319,21 @@ class DataGenerator(keras.utils.Sequence):
             # ID is in format 'filenum-framenum'
             ID = ID.split('-')
             file_num = int(ID[0])
+            if file_num > 9:
+                continue
             frame_num = int(ID[1])+np.random.randint(0,N_JITTER-1)
             frame_num = np.minimum(frame_num,999-N_TIMESTEPS)
             frame_num = np.maximum(frame_num,0)
 
             # quicker way reading from hdf5
-            file_name = orig_folder_name + 'hdf5_'+file_name_stub + str(file_num) + '.hdf5'
+            file_name = folder_name + 'hdf5_'+stub_name + str(file_num) + '.hdf5'
             h5file = h5py.File(file_name, 'r')
 
             for j in range(3, N_TIMESTEPS):
-                X[i,j] = h5file['frame_'+str(frame_num+j)+'_x'][:] # /255
+                try:
+                    X[i,j] = h5file['frame_'+str(frame_num+j)+'_x'][:] # /255
+                except:
+                    continue
                 y[i,j,:-2] = h5file['frame_'+str(frame_num+j)+'_y'][:]
 
                 help_i = h5file['frame_'+str(frame_num+j)+'_helperarr'][:]
@@ -364,14 +375,20 @@ class DataGenerator(keras.utils.Sequence):
             # this is because firing rate of guns is slower than frame rate
             # yes I know should have done this at preprocessing stage...
             for j in range(1,N_TIMESTEPS-1):
-                if y[i,j-1,n_keys:n_keys+1] == 1 and y[i,j+1,n_keys:n_keys+1] == 1:
-                    y[i,j,n_keys:n_keys+1] = 1
+                try:
+                    if y[i,j-1,n_keys:n_keys+1] == 1 and y[i,j+1,n_keys:n_keys+1] == 1:
+                        y[i,j,n_keys:n_keys+1] = 1
+                except IndexError:
+                    continue
 
             # 7 aug seem to need to fill in 1001 as well for spraying
             for j in range(1,N_TIMESTEPS-2):
-                if y[i,j-1,n_keys:n_keys+1] == 1 and y[i,j+2,n_keys:n_keys+1] == 1:
-                    y[i,j,n_keys:n_keys+1] = 1
-                    y[i,j+1,n_keys:n_keys+1] = 1
+                try:
+                    if y[i,j-1,n_keys:n_keys+1] == 1 and y[i,j+2,n_keys:n_keys+1] == 1:
+                        y[i,j,n_keys:n_keys+1] = 1
+                        y[i,j+1,n_keys:n_keys+1] = 1
+                except IndexError:
+                    continue
 
             # TODO, include x_aux
 
@@ -391,7 +408,7 @@ class DataGenerator(keras.utils.Sequence):
                     dkey = y[i,:,3]
                     y[i,:,1] = dkey
                     y[i,:,3] = akey
-            if True:
+            if i<len(X):
                 # brightness
                 if np.random.rand()<0.5: # was 0.2, raised to 0.5
                     # adjust in range 0.7 to 1.1, <1 darkesns, >1 brightens
@@ -777,13 +794,13 @@ if file_name_stub == 'dm_july2021_expert_' and IS_LOAD_WEIGHTS_AND_MODEL:
 if file_name_stub == 'dm_july2021_expert_' and not IS_LOAD_WEIGHTS_AND_MODEL:
     # training from scratch
     for iter_letter in ['a','b','c','d','e','f']:
-        hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=True, max_queue_size=20) 
+        hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=False, max_queue_size=20) 
         tp_save_model(model, save_dir, model_name+iter_letter+'4')
-        hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=True, max_queue_size=20) 
+        hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=False, max_queue_size=20) 
         tp_save_model(model, save_dir, model_name+iter_letter+'8')
-        hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=True, max_queue_size=20) 
+        hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=False, max_queue_size=20) 
         tp_save_model(model, save_dir, model_name+iter_letter+'12')
-        hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=True, max_queue_size=20) 
+        hist = model.fit(training_generator_full,validation_data=validation_generator_full,epochs=4,workers=4,verbose=1,use_multiprocessing=False, max_queue_size=20) 
         tp_save_model(model, save_dir, model_name+iter_letter+'16')
 
 if file_name_stub == 'aim_july2021_expert_' and not IS_LOAD_WEIGHTS_AND_MODEL:
