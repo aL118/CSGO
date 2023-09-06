@@ -9,3 +9,7 @@
 /my_models
 /playtest
 /stats
+/data
+
+# ignore large files
+TeamViewer_Setup_x64.exe
