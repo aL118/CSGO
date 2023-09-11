@@ -29,7 +29,7 @@ from config import *
 
 
 # file_name_stub = 'bot3' 
-folder_name = 'D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\bot_playtest\\'
+folder_name = 'D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\playtest\\'
 
 starting_value = 1
 highest_num = starting_value
@@ -37,7 +37,7 @@ highest_num = starting_value
 summary_stats=[]
 
 # for all files in folder
-for file in os.listdir(folder_name):
+for file in ['test1.npy']:
     file_name = folder_name+file
 
     # try to find file
@@ -327,7 +327,7 @@ for file in os.listdir(folder_name):
 
             new_training_data.append([img_small,curr_vars,infer_a])
             # new_training_data.append([[],curr_vars,infer_a]) # use this for tracking
-        # np.save(file_name,new_training_data)
+        np.save(file_name,new_training_data)
         print('SAVED', file_name)
 
     print('dead_skipped',dead_skipped)

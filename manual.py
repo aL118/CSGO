@@ -301,4 +301,4 @@ def main(save_name):
             # will be running fwd pass through NN
         wait_for_loop_end(loop_start_time, loop_fps, n_loops, is_clear_decals=True)
 
-main("bot")
+main("test1")

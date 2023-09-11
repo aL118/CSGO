@@ -2,7 +2,8 @@
 /bot_playtest
 /dataset_dm_expert_dust2
 /dataset_metadata
-/hdfs
+hdfs/*
+!hdfs/test_test1.hdf5
 /location_trackings_backup
 /models
 /my_dataset_metadata
@@ -13,3 +14,6 @@
 
 # ignore large files
 TeamViewer_Setup_x64.exe
+
+# exceptions
+!hdfs/test_test1.hdf5

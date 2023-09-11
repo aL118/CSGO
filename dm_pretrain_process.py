@@ -38,7 +38,7 @@ highest_num = starting_value
 
 
 # for each file of interest
-for file in ['general_play_3.npy','general_play_4.npy']:
+for file in ['test1.npy']:
     print(datetime.datetime.now())
     file_name = folder_name+file
     print('load train data from ', file_name, ' ...')
@@ -108,8 +108,9 @@ for file in ['general_play_3.npy','general_play_4.npy']:
 
     # repackage into correct format and save new training data
     # also going to save as an .hdf5 file for quicker access later
-    h5file_name = 'hdf5_'+file[:-4]+'.hdf5'
-    h5file = h5py.File(folder_name+h5file_name, 'w')
+    h5file_name = 'test_'+file[:-4]+'.hdf5'
+    hdfs_folder = 'D:\\lyzheng\\projects\\angela\\Counter-Strike_Behavioural_Cloning\\hdfs\\'
+    h5file = h5py.File(hdfs_folder+h5file_name, 'w')
     new_training_data = []
     for i, data in enumerate(training_data):
         img_small = data[0]

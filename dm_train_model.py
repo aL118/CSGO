@@ -286,12 +286,12 @@ class DataGenerator(keras.utils.Sequence):
         list_IDs_temp = [self.list_IDs[k] for k in indexes]
         my_list_IDs_temp = [self.list_IDs[k] for k in range(0,min(90,len(self.list_IDs)))]
 
-        X1, y1 = self.__data_generation(list_IDs_temp, orig_folder_name, "dm_july2021_expert_")
-        X2, y2 = self.__data_generation(my_list_IDs_temp, my_folder_name, "play_")
+        # X1, y1 = self.__data_generation(list_IDs_temp, orig_folder_name, "dm_july2021_expert_")
+        X, y = self.__data_generation(my_list_IDs_temp, my_folder_name, "test_")
         # sample half from each dataset
-        orig = sample(range(0,96),48)
-        X = np.array([[X1[0][i] if i in orig else X2[0][i] for i in range(0,96)]])
-        y = np.array([[y1[0][i] if i in orig else y2[0][i] for i in range(0,96)]])
+        # orig = sample(range(0,96),48)
+        # X = np.array([[X1[0][i] if i in orig else X2[0][i] for i in range(0,96)]])
+        # y = np.array([[y1[0][i] if i in orig else y2[0][i] for i in range(0,96)]])
         return X, y
 
     def on_epoch_end(self):
@@ -326,7 +326,7 @@ class DataGenerator(keras.utils.Sequence):
             frame_num = np.maximum(frame_num,0)
 
             # quicker way reading from hdf5
-            file_name = folder_name + 'hdf5_'+stub_name + str(file_num) + '.hdf5'
+            file_name = folder_name + 'test_test1.hdf5' # 'hdf5_'+stub_name + str(file_num) + '.hdf5'
             h5file = h5py.File(file_name, 'r')
 
             for j in range(3, N_TIMESTEPS):
